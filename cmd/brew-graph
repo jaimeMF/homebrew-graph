@@ -13,7 +13,8 @@ import sys
 
 def run(command, print_command=False):
     "Run a command, returning the exit code and output."
-    if print_command: print command
+    if print_command:
+        print command
     p = Popen(command, stdout=PIPE)
     output, errput = p.communicate()
     return p.returncode, output
@@ -126,7 +127,6 @@ class Node(object):
         _attribs['label'] = self.label
 
         return '%-*s %s' % (id_width, _quote_id(self.id), format_attribs(_attribs))
-
 
     def to_dot(self, out, id_width=1):
         out.outln(self.as_dot(id_width))
@@ -302,7 +302,7 @@ def main():
     depgraph = list()
 
     for f in output.split("\n"):
-        stuff = f.split(":",2)
+        stuff = f.split(":", 2)
         if len(stuff) < 2:
             continue
         name = stuff[0]
@@ -316,21 +316,31 @@ def main():
     # We need newrank = True to make sure clusters respect rank = "source". Otherwise, we may get
     # random nodes next to "Safe to Remove" cluster, despite them not being a part of that cluster.
     hb = Graph("Homebrew Dependencies", attrib={
-        'labelloc':'t', 'rankdir': 'TB' , 'ranksep':'3', 'newrank': True,
+        'labelloc': 't', 'rankdir': 'TB', 'ranksep': '3', 'newrank': True,
         'graph': {'fontname': 'Futura-Medium', 'fontsize': 48},
         'node': {'fontname': 'HelveticaNeue', 'fontsize': 14}
-        })
+    })
     # Independent formulas (those that are not dependended on by any other formula) get placed in
     # their own subgraph so we can align them together on the left.
     if show == 'installed':
         # We use a HTML-like label to give the label a little bit of padding at the top
-        sub = hb.cluster("independent", "<<font point-size=\"15\"><br/></font>Safe to Remove>",
-                attrib={'rank': 'source', 'style': 'filled', 'fillcolor': '#F0F0F0', 'color': 'invis',
-                    'margin': '25,1', 'graph': {'fontname': 'Helvetica-LightOblique', 'fontsize': 24}})
+        sub = hb.cluster(
+            "independent", "<<font point-size=\"15\"><br/></font>Safe to Remove>",
+            attrib={
+                'rank': 'source',
+                'style': 'filled',
+                'fillcolor': '#F0F0F0',
+                'color': 'invis',
+                'margin': '25,1',
+                'graph': {
+                    'fontname': 'Helvetica-LightOblique',
+                    'fontsize': 24,
+                }})
     else:
         sub = hb
 
     seen = set()
+
     def addNode(graph, name):
         if name not in seen:
             graph.node(name, name, attrib={'shape': 'box'})
