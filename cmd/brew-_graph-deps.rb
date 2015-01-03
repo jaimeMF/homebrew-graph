@@ -21,7 +21,8 @@ def deps_for_formula(f, installed)
 
   reqs = f.requirements
 
-  deps + reqs.select(&:default_formula?).map(&:to_dependency)
+  all_deps = deps + reqs.select(&:default_formula?).map(&:to_dependency)
+  all_deps.map(&:to_formula)
 end
 
 def puts_deps(formulae, installed)
